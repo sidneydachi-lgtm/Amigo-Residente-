@@ -84,7 +84,7 @@ const O=id=>{cur=S.pts.find(p=>p.id==id);dirty=false;PUSH();Object.assign(OP,{e:
 const TG=id=>{const p=S.pts.find(x=>x.id==id);p.ev=!p.ev;pst();R()};
 const AL=()=>{const p=mk({});S.pts.push(p);pst();O(p.id);M("id")};
 let rmc=false;const RM=()=>{if(!rmc){rmc=true;const rb=$("#rmb");if(rb){rb.textContent="Confirmar exclusão (toque novamente)";rb.style.background="var(--rd)";rb.style.color="#fff"}setTimeout(()=>{rmc=false;const r2=$("#rmb");if(r2){r2.textContent="Excluir paciente";r2.style.background="";r2.style.color="var(--rd)"}},4000);return}rmc=false;const id=cur.id,pt=cur;S.pts=S.pts.filter(p=>p.id!=id);(S.trash=S.trash||[]).push({t:Date.now(),p:pt});cur=null;dirty=false;files=[];mod=null;pst();try{Object.keys(localStorage).forEach(k=>{if(k==KEY)return;try{const d=JSON.parse(localStorage.getItem(k));if(d&&Array.isArray(d.pts))localStorage.removeItem(k)}catch(x){}})}catch(x){}R();scrollTo(0,0);if(hs>0)history.back();msg("Paciente movido para a lixeira (apagado de vez em "+TRD+" dias)")};
-const TRD=7;
+const TRD=14;
 const SCRUB=ids=>{if(!ids.length)return;try{const a=JSON.parse(localStorage.getItem(SK))||[],o=[];a.forEach(x=>{try{const d=JSON.parse(x.s);d.pts=(d.pts||[]).filter(p=>!ids.includes(p.id));d.trash=(d.trash||[]).filter(q=>!ids.includes(q.p.id));x.s=JSON.stringify(d);o.push(x)}catch(z){}});localStorage.setItem(SK,JSON.stringify(o))}catch(z){}};
 const PURGE=()=>{const now=Date.now(),lim=TRD*864e5,tr=S.trash||[],gone=tr.filter(x=>now-x.t>=lim);if(!gone.length)return 0;S.trash=tr.filter(x=>now-x.t<lim);SCRUB(gone.map(x=>x.p.id));pst();return gone.length};
 const KT=tr=>{S.trash=(tr||[]).filter(x=>!S.pts.some(p=>p.id==x.p.id))};
